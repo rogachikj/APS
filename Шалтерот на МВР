@@ -1,0 +1,216 @@
+/*
+Луѓето доаѓаат наутро во МВР за да извадат еден или повеќе документи.
+Документите може да бидат:
+1. Лична карта
+2. Пасош
+3. Возачка дозвола
+Кога се отвора шалтерот прво се услужуваат луѓето кои чекаат за лична карта, па потоа оние за пасош и на крај оние за возачка дозвола.
+Секој човек кога ќе дојде си застанува во редицата за соодветната исправа која ја вади (т.е. или во редицата за лични карти или во редицата за пасоши или во редицата за возачки дозволи). Доколку еден човек има повеќе документи за вадење прво вади лична карта, па пасош и на крај возачка. Така ако еден човек треба да вади и лична карта и возачка дозвола прво застанува во редицата за лични карти и откако ќе заврши таму оди на крајот на редицата за возачки дозволи.
+
+Влез: Првиот ред означува колку луѓе вкупно дошле во МВР. Потоа за секој човек се внесуваат четири реда, во првиот е името и презимето на човекот, а во останатите три реда се кажува кој документ соодветно (лична карта, пасош и возачка) треба да се земе, притоа 1 значи дека треба да се земе тој документ, 0 значи дека не треба да се земе.
+
+На пример:
+
+Aleksandar Aleksandrovski
+1
+0
+1
+означува дека Александар Александровски ќе вади и лична карта и возачка дозвола, но нема да вади пасош.
+Излез: Ги печати имињата на луѓето по редоследот по кој завршуваат со вадење на документи.
+
+Име на класата (Java): MVR
+*/
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.NoSuchElementException;
+import java.util.Scanner;
+
+interface Queue<E> {
+
+    // Elementi na redicata se objekti od proizvolen tip.
+
+    // Metodi za pristap:
+
+    public boolean isEmpty ();
+    // Vrakja true ako i samo ako redicata e prazena.
+
+    public int size ();
+    // Ja vrakja dolzinata na redicata.
+
+    public E peek ();
+    // Go vrakja elementot na vrvot t.e. pocetokot od redicata.
+
+    // Metodi za transformacija:
+
+    public void clear ();
+    // Ja prazni redicata.
+
+    public void enqueue (E x);
+    // Go dodava x na kraj od redicata.
+
+    public E dequeue ();
+    // Go otstranuva i vrakja pochetniot element na redicata.
+
+}
+
+class LinkedQueue<E> implements Queue<E> {
+
+    // Redicata e pretstavena na sledniot nacin:
+    // length go sodrzi brojot na elementi.
+    // Elementite se zachuvuvaat vo jazli dod SLL
+    // front i rear se linkovi do prviot i posledniot jazel soodvetno.
+    SLLNode<E> front, rear;
+    int length;
+
+    // Konstruktor ...
+
+    public LinkedQueue () {
+        clear();
+    }
+
+    public boolean isEmpty () {
+        // Vrakja true ako i samo ako redicata e prazena.
+        return (length == 0);
+    }
+
+    public int size () {
+        // Ja vrakja dolzinata na redicata.
+        return length;
+    }
+
+    public E peek () {
+        // Go vrakja elementot na vrvot t.e. pocetokot od redicata.
+        if (front == null)
+            throw new NoSuchElementException();
+        return front.element;
+    }
+
+    public void clear () {
+        // Ja prazni redicata.
+        front = rear = null;
+        length = 0;
+    }
+
+    public void enqueue (E x) {
+        // Go dodava x na kraj od redicata.
+        SLLNode<E> latest = new SLLNode<E>(x, null);
+        if (rear != null) {
+            rear.succ = latest;
+            rear = latest;
+        } else
+            front = rear = latest;
+        length++;
+    }
+
+    public E dequeue () {
+        // Go otstranuva i vrakja pochetniot element na redicata.
+        if (front != null) {
+            E frontmost = front.element;
+            front = front.succ;
+            if (front == null)  rear = null;
+            length--;
+            return frontmost;
+        } else
+            throw new NoSuchElementException();
+    }
+
+}
+
+class SLLNode<E> {
+    protected E element;
+    protected SLLNode<E> succ;
+
+    public SLLNode(E elem, SLLNode<E> succ) {
+        this.element = elem;
+        this.succ = succ;
+    }
+
+    @Override
+    public String toString() {
+        return element.toString();
+    }
+}
+
+class Gragjanin {
+    private String ime;
+    private int licnaKarta;
+    private int pasos;
+    private int vozachka;
+
+    public Gragjanin(String ime, int licnaKarta, int pasos, int vozachka){
+        this.ime = ime;
+        this.licnaKarta = licnaKarta;
+        this.pasos = pasos;
+        this.vozachka = vozachka;
+    }
+
+    public int getLicnaKarta(){
+        return licnaKarta;
+    }
+
+    public int getPasos(){
+        return pasos;
+    }
+
+    public int getVozachka(){
+        return vozachka;
+    }
+
+    public String getIme(){
+        return ime;
+    }
+}
+
+public class MVR {
+    public static void main (String [] args) throws IOException{
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        int n = Integer.parseInt(br.readLine());
+
+        LinkedQueue<Gragjanin> lichnaRed = new LinkedQueue<>();
+        LinkedQueue<Gragjanin> pasoshRed = new LinkedQueue<>();
+        LinkedQueue<Gragjanin> vozachkaRed = new LinkedQueue<>();
+
+        for(int i=0; i<n; i++){
+            String kIme = br.readLine();
+            int kLichna = Integer.parseInt(br.readLine());
+            int kPasosh = Integer.parseInt(br.readLine());
+            int kVozachka = Integer.parseInt(br.readLine());
+            Gragjanin gragjanin = new Gragjanin(kIme,kLichna,kPasosh,kVozachka);
+
+            if(gragjanin.getLicnaKarta() == 1){
+                lichnaRed.enqueue(gragjanin);
+            } else if (gragjanin.getPasos() == 1){
+                pasoshRed.enqueue(gragjanin);
+            } else {
+                vozachkaRed.enqueue(gragjanin);
+            }
+        }
+
+        while(!lichnaRed.isEmpty()){
+            Gragjanin gragjaninNaRed = lichnaRed.dequeue();
+            if(gragjaninNaRed.getPasos() == 1){
+                pasoshRed.enqueue(gragjaninNaRed);
+            } else if(gragjaninNaRed.getVozachka() == 1){
+                vozachkaRed.enqueue(gragjaninNaRed);
+            } else {
+                System.out.println(gragjaninNaRed.getIme());
+            }
+        }
+
+        while(!pasoshRed.isEmpty()){
+            Gragjanin gragjaninNaRed = pasoshRed.dequeue();
+            if(gragjaninNaRed.getVozachka() == 1){
+                vozachkaRed.enqueue(gragjaninNaRed);
+            } else {
+                System.out.println(gragjaninNaRed.getIme());
+            }
+        }
+
+        while(!vozachkaRed.isEmpty()){
+            Gragjanin gragjaninNaRed = vozachkaRed.dequeue();
+            System.out.println(gragjaninNaRed.getIme());
+        }
+    }
+}
