@@ -19,6 +19,31 @@ Aleksandar Aleksandrovski
 Излез: Ги печати имињата на луѓето по редоследот по кој завршуваат со вадење на документи.
 
 Име на класата (Java): MVR
+
+Sample input
+4
+Aleksandar Aleksandrovski
+0
+0
+1
+Petre Petreski
+1
+0
+0
+Branka Brankovska
+0
+0
+1
+Jana Janevska
+0
+1
+0
+
+Sample output
+Petre Petreski
+Jana Janevska
+Aleksandar Aleksandrovski
+Branka Brankovska
 */
 
 import java.io.BufferedReader;
