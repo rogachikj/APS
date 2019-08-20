@@ -1,5 +1,5 @@
 /*
-/*Се организира прв колоквиум по предметот Алгоритми и структури на податоци. За таа цел 
+*Се организира прв колоквиум по предметот Алгоритми и структури на податоци. За таа цел 
  *се отвара анкета по предметот на која студентите се пријавуваат. 
 Анкетата има дадено 2 избори:
 1)	Полагам во било кој термин
@@ -20,6 +20,32 @@
 останатите студенти (според редоследот по кој се пријавиле). На крај се дава број и список
  на студенти кои навистина полагаат Математика. На излез се печати број на термин, па 
  студентите кои полагаат во тој термин.
+ 
+ Sample input
+2
+4
+IlinkaIvanoska
+IgorKulev
+MagdalenaKostoska
+HristinaMihajloska
+3
+VladimirTrajkovik
+SlobodanKalajdziski
+AnastasMisev
+1
+IlinkaIvanoska
+Sample output
+1
+IlinkaIvanoska
+VladimirTrajkovik
+2
+SlobodanKalajdziski
+AnastasMisev
+3
+IgorKulev
+MagdalenaKostoska
+4
+HristinaMihajloska
 */
 
 import java.io.BufferedReader;
