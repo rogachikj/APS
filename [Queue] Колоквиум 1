@@ -13,7 +13,34 @@
 Следно се дава бројот на предмети за кои се потребни асистенти, па се наведуваат предметите
 и по колку асистенти се потребни за секој предмет. Потоа се дава бројот на асистенти кои се
 отсутни и списокот на тековно отсутните асистенти. 
-На излез се печати предмет, па асистенти задолжени за чување на тој предмет (за секој од дадените предмети).
+На излез се печати предмет, па асистенти задолжени за чување на тој предмет (за секој од дадените предмети).*/
+ 
+/*Sample input
+4
+IlinkaIvanoska
+IgorKulev
+MagdalenaKostoska
+HristinaMihajloska
+3
+APS 3
+MIS 1
+OOS 2
+1
+HristinaMihajloska
+ 
+Sample output
+APS
+3
+IlinkaIvanoska
+IgorKulev
+MagdalenaKostoska
+MIS
+1
+IlinkaIvanoska
+OOS
+2
+IgorKulev
+MagdalenaKostoska
 */
 
 import java.io.BufferedReader;
