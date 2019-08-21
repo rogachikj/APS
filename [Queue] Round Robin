@@ -1,0 +1,214 @@
+/* Да се имплементира Round Robin алгоритам. Се внесува број на процеси, потоа се внесуваат процесите како стринг составен од име,
+време на извршување, време на пристигнување. Се внесуват во ред. Потоа се внесува временскиот интервал кој му е дозволен за извршување
+на процесот. 
+Sample input:
+5
+A 40 2
+B 35 0
+C 28 10
+D 45 4
+E 32 2
+10
+
+Sample output:
+B A E D C B A E D C B A E D C B A E D D 
+*/
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.NoSuchElementException;
+
+class LinkedQueue<E> implements Queue<E> {
+
+    // Redicata e pretstavena na sledniot nacin:
+    // length go sodrzi brojot na elementi.
+    // Elementite se zachuvuvaat vo jazli dod SLL
+    // front i rear se linkovi do prviot i posledniot jazel soodvetno.
+    SLLNode<E> front, rear;
+    int length;
+
+    // Konstruktor ...
+
+    public LinkedQueue () {
+        clear();
+    }
+
+    public boolean isEmpty () {
+        // Vrakja true ako i samo ako redicata e prazena.
+        return (length == 0);
+    }
+
+    public int size () {
+        // Ja vrakja dolzinata na redicata.
+        return length;
+    }
+
+    public E peek () {
+        // Go vrakja elementot na vrvot t.e. pocetokot od redicata.
+        if (front == null)
+            throw new NoSuchElementException();
+        return front.element;
+    }
+
+    public void clear () {
+        // Ja prazni redicata.
+        front = rear = null;
+        length = 0;
+    }
+
+    public void enqueue (E x) {
+        // Go dodava x na kraj od redicata.
+        SLLNode<E> latest = new SLLNode<E>(x, null);
+        if (rear != null) {
+            rear.succ = latest;
+            rear = latest;
+        } else
+            front = rear = latest;
+        length++;
+    }
+
+    public E dequeue () {
+        // Go otstranuva i vrakja pochetniot element na redicata.
+        if (front != null) {
+            E frontmost = front.element;
+            front = front.succ;
+            if (front == null)  rear = null;
+            length--;
+            return frontmost;
+        } else
+            throw new NoSuchElementException();
+    }
+
+}
+
+interface Queue<E> {
+
+    // Elementi na redicata se objekti od proizvolen tip.
+
+    // Metodi za pristap:
+
+    public boolean isEmpty ();
+    // Vrakja true ako i samo ako redicata e prazena.
+
+    public int size ();
+    // Ja vrakja dolzinata na redicata.
+
+    public E peek ();
+    // Go vrakja elementot na vrvot t.e. pocetokot od redicata.
+
+    // Metodi za transformacija:
+
+    public void clear ();
+    // Ja prazni redicata.
+
+    public void enqueue (E x);
+    // Go dodava x na kraj od redicata.
+
+    public E dequeue ();
+    // Go otstranuva i vrakja pochetniot element na redicata.
+
+}
+
+class SLLNode<E> {
+    protected E element;
+    protected SLLNode<E> succ;
+
+    public SLLNode(E elem, SLLNode<E> succ) {
+        this.element = elem;
+        this.succ = succ;
+    }
+
+    @Override
+    public String toString() {
+        return element.toString();
+    }
+}
+
+class Process {
+    protected String name;
+    protected int vremeIzvrshuvanje;
+    protected int vremePristignuvanje;
+
+    public String getName(){
+        return name;
+    }
+
+    public int getVremeIzvrshuvanje(){
+        return vremeIzvrshuvanje;
+    }
+
+    public int getVremePristignuvanje(){
+        return vremePristignuvanje;
+    }
+
+    public Process(String name, int vremeIzvrshuvanje, int vremePristignuvanje){
+        this.name = name;
+        this.vremeIzvrshuvanje = vremeIzvrshuvanje;
+        this.vremePristignuvanje = vremePristignuvanje;
+    }
+
+    @Override
+    public String toString(){
+        return String.format("%s ",name);
+    }
+}
+
+
+public class RoundRobin {
+    public static void main (String [] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        int brProcesi = Integer.parseInt(br.readLine());
+        LinkedQueue<Process> procesiRed = new LinkedQueue<>();
+
+        for(int i=0; i<brProcesi; i++){
+            String line = br.readLine();
+            String [] parts = line.split(" ");
+            String name = parts[0];
+            int vremeIzvrshuvanje = Integer.parseInt(parts[1]);
+            int vremePristignuvanje = Integer.parseInt(parts[2]);
+            Process process = new Process(name,vremeIzvrshuvanje,vremePristignuvanje);
+            procesiRed.enqueue(process);
+        }
+
+        int interval = Integer.parseInt(br.readLine());
+
+        LinkedQueue<Process> procesiRedFinal = new LinkedQueue<>();
+
+        while(brProcesi!=0) {
+            Process najmal = procesiRed.peek();
+            for (int i = 0; i < brProcesi; i++) {
+                Process var = procesiRed.dequeue();
+                if (najmal.getVremePristignuvanje() > var.getVremePristignuvanje()) {
+                    najmal = var;
+                    procesiRed.enqueue(var);
+                } else if (najmal.getVremePristignuvanje() == var.getVremePristignuvanje()) {
+                    if (var.getVremeIzvrshuvanje() > najmal.getVremeIzvrshuvanje()) {
+                        najmal = var;
+                        procesiRed.enqueue(var);
+                    } else {
+                        procesiRed.enqueue(var);
+                    }
+                } else {
+                    procesiRed.enqueue(var);
+                }
+            }
+            procesiRedFinal.enqueue(najmal);
+            for (int i = 0; i < brProcesi; i++) {
+                Process var = procesiRed.dequeue();
+                if (var != najmal) {
+                    procesiRed.enqueue(var);
+                }
+            }
+            brProcesi--;
+        }
+
+        while(!procesiRedFinal.isEmpty()){
+            Process var = procesiRedFinal.dequeue();
+            System.out.printf("%s ",var.getName());
+            var.vremeIzvrshuvanje -= interval;
+            if(var.vremeIzvrshuvanje>0)
+                procesiRedFinal.enqueue(var);
+        }
+    }
+}
