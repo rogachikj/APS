@@ -1,0 +1,195 @@
+/*
+Компанија Problem 10 (1 / 1)
+Податоците за плати на вработените во една компанија привремено се чуваат во еднострано поврзана листа.
+Во секој јазол од листата се чува единствен ID на вработениот и неговата плата.
+Потребно е да се отстранат сите вработени со помали плати од даден износ,
+а остатокот да се прикажат во опаѓачки редослед во однос на ID-то.
+Во првиот ред од влезот е даден бројот на вработени, потоа наизменично се дадени ID и плата за секој од вработените и во последниот ред
+е износот во однос на кој ќе се отстрануваат вработените. На излез се печати листа (ID, плата) во опаѓачки редослед според ID на секој од
+вработените.
+
+Доколку нема вработени со плата поголема од дадената да се испечати: nema
+
+Име на класата: SLLKompanija
+
+Sample input
+3
+1111
+19000
+2222
+22000
+1155
+60000
+30000
+
+Sample output
+1155 60000
+*/
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+
+
+class SLLNode {
+    protected int id;
+    protected int plata;
+    protected SLLNode succ;
+
+    public SLLNode(int id,int plata, SLLNode succ) {
+        this.id = id;
+        this.plata=plata;
+        this.succ = succ;
+    }
+}
+
+class SLL {
+    public SLLNode first;
+
+    public SLL() {
+        // Construct an empty SLL
+        this.first = null;
+    }
+
+    public void deleteList() {
+        first = null;
+    }
+
+    public int length() {
+        int ret;
+        if (first != null) {
+            SLLNode tmp = first;
+            ret = 1;
+            while (tmp.succ != null) {
+                tmp = tmp.succ;
+                ret++;
+            }
+            return ret;
+        } else
+            return 0;
+
+    }
+
+
+    public void insertFirst(int id, int plata) {
+        SLLNode ins = new SLLNode(id,plata, first);
+        first = ins;
+    }
+
+    public void insertLast(int id,int plata) {
+        if (first != null) {
+            SLLNode tmp = first;
+            while (tmp.succ != null)
+                tmp = tmp.succ;
+            SLLNode ins = new SLLNode(id, plata, null);
+            tmp.succ = ins;
+        } else {
+            insertFirst(id,plata);
+        }
+    }
+
+    public SLLNode getFirst() {
+        return first;
+    }
+
+    public void modifyLimit(int limit){
+        if(first == null){
+            return;
+        }
+        SLLNode ptr = first;
+        SLLNode prev = first;
+        while(ptr!=null) {
+            if (ptr.plata < limit) {
+                if (ptr == first) {
+                    ptr = prev = first = first.succ;
+                } else {
+                    prev.succ = ptr.succ;
+                    ptr = ptr.succ;
+                }
+            } else {
+                if (ptr != first)
+                    prev = ptr;
+                ptr = prev.succ;
+            }
+        }
+    }
+
+    private SLLNode findMiddle(SLLNode head){
+        if(head == null)
+            return head;
+
+        SLLNode slowPtr = head;
+        SLLNode fastPtr = head.succ;
+
+        while(fastPtr!=null){
+            fastPtr = fastPtr.succ;
+            if(fastPtr!=null){
+                fastPtr = fastPtr.succ;
+                slowPtr = slowPtr.succ;
+            }
+        }
+        return slowPtr;
+    }
+
+    public SLLNode mergeSort(SLLNode head){
+        if(head == null || head.succ == null)
+            return head;
+
+        SLLNode middle = findMiddle(head);
+        SLLNode nextToMiddle = middle.succ;
+
+        middle.succ = null;
+        SLLNode left = mergeSort(head);
+        SLLNode right = mergeSort(nextToMiddle);
+
+        SLLNode sortedListNode = sortedList(left, right);
+        return sortedListNode;
+    }
+
+    private SLLNode sortedList(SLLNode a, SLLNode b){
+        SLLNode result = null;
+
+        if(a == null)
+            return b;
+        if(b == null)
+            return a;
+        if(a.id > b.id){
+            result = a;
+            result.succ = sortedList(a.succ,b);
+        } else {
+            result = b;
+            result.succ = sortedList(a,b.succ);
+        }
+        return result;
+    }
+
+    public void print(){
+        SLLNode ptr = first;
+        if(ptr == null)
+            System.out.println("nema");
+        while(ptr!=null){
+            System.out.printf("%d %d\n",ptr.id,ptr.plata);
+            ptr = ptr.succ;
+        }
+    }
+}
+public class SLLKompanija {
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        int n = Integer.parseInt(br.readLine());
+        SLL list = new SLL();
+
+        for(int i=0; i<n; i++){
+            int ID = Integer.parseInt(br.readLine());
+            int salary = Integer.parseInt(br.readLine());
+            list.insertLast(ID,salary);
+        }
+
+        int limit = Integer.parseInt(br.readLine());
+
+        list.modifyLimit(limit);
+        list.first = list.mergeSort(list.getFirst());
+        list.print();
+    }
+}
