@@ -19,7 +19,7 @@ class DLLNode<E> {
 }
 
 class DLL<E> {
-    protected DLLNode<E> first, last;
+    private DLLNode<E> first, last;
 
     public DLL() {
         // Construct an empty SLL
@@ -237,7 +237,7 @@ class DLL<E> {
         DLLNode temp = node;
         //System.out.println("Forward Traversal using next pointer");
         while (node != null) {
-            //System.out.print(node.element + " ");
+            System.out.print(node.element + " ");
             temp = node;
             node = node.succ;
         }
@@ -247,9 +247,17 @@ class DLL<E> {
             temp = temp.pred;
         }
     }
+
+    public void mergeSortt(){
+        first = mergeSort(first);
+        DLLNode<E> ptr = first;
+        while(ptr.succ!=null)
+            ptr = ptr.succ;
+        last = ptr;
+    }
 }
 
-public class SLLKompanija {
+public class Signal {
     public static void main(String[] args) throws IOException{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         int n = Integer.parseInt(br.readLine());
@@ -259,7 +267,10 @@ public class SLLKompanija {
             list.insertLast(Integer.parseInt(br.readLine()));
         }
 
-        list.first = list.mergeSort(list.getFirst());
-        list.print(list.getFirst());
+        list.mergeSortt();
+        System.out.println(list.toStringR());
+        System.out.println(list.toString());
+        System.out.println(list.getFirst());
+        System.out.println(list.getLast());
     }
 }
