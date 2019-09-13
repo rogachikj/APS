@@ -260,7 +260,7 @@ public class ListSum {
                     var = var % 10;
                     list3.insertFirst(var);
                 }
-                ptr1 = ptr1.pred;
+                ptr2 = ptr2.pred;
             }
         }
         if(ostatok != 0)
