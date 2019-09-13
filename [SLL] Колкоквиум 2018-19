@@ -1,5 +1,12 @@
 /*
 Внесуваш листа од n елементи. На секој трет елемент првата буква му се праве голема. На крајот а печатиш листата во двата правци.
+Sample input:
+8
+petar dijana stolce masa kafe sok fildzan mobilen
+
+Sample output:
+petar dijana Stolce masa kafe Sok fildzan mobilen 
+mobilen fildzan Sok kafe masa Stolce dijana petar 
 */
 import java.io.BufferedReader;
 import java.io.IOException;
